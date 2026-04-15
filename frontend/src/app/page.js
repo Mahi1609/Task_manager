@@ -20,6 +20,8 @@ export default function Home() {
 
       let url = `${BASE_URL}/tasks?`;
 
+      console.log("BASE_URL:", BASE_URL);
+
       if (filterStatus) url += `status=${filterStatus}&`;
       if (filterUser) url += `assigned_to=${filterUser}`;
 
