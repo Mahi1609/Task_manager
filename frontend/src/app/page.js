@@ -16,7 +16,7 @@ export default function Home() {
 
   const fetchTasks = async () => {
     try {
-      const BASE_URL = "http://127.0.0.1:8000";
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
       let url = `${BASE_URL}/tasks?`;
 
