@@ -55,74 +55,105 @@ export default function CreateTask() {
       alert("Failed to create task ❌");
     }
   };
-
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Create Task</h1>
+  <div className="min-h-screen bg-gray-100 flex justify-center mt-10 p-6">
 
-      <input
-        placeholder="Title"
-        value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
-      />
+    <div className="w-full max-w-xl bg-white p-6 rounded-xl shadow-lg">
 
-      <br /><br />
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Create New Task
+      </h1>
 
-      <input
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-      />
+      {/* TITLE */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">
+          Title
+        </label>
+        <input
+          value={form.title}
+          onChange={(e) =>
+            setForm({ ...form, title: e.target.value })
+          }
+          className="w-full p-2 border rounded"
+          placeholder="Enter task title"
+        />
+      </div>
 
-      <br /><br />
+      {/* DESCRIPTION */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">
+          Description
+        </label>
+        <input
+          value={form.description}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
+          className="w-full p-2 border rounded"
+          placeholder="Enter description"
+        />
+      </div>
 
-      <input
-        placeholder="Assigned To"
-        value={form.assigned_to}
-        onChange={(e) => setForm({ ...form, assigned_to: e.target.value })}
-      />
+      {/* ASSIGNED TO */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">
+          Assigned To
+        </label>
+        <input
+          value={form.assigned_to}
+          onChange={(e) =>
+            setForm({ ...form, assigned_to: e.target.value })
+          }
+          className="w-full p-2 border rounded"
+          placeholder="Enter user name"
+        />
+      </div>
 
-      <br /><br />
+      {/* DUE DATE */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">
+          Due Date
+        </label>
+        <input
+          type="datetime-local"
+          onChange={(e) => {
+            const value = e.target.value;
+            setForm({
+              ...form,
+              due_date: value ? value + ":00" : "",
+            });
+          }}
+          className="w-full p-2 border rounded"
+        />
+      </div>
 
-      {/* ✅ FIXED datetime format */}
-      <input
-        type="datetime-local"
-        onChange={(e) => {
-          const value = e.target.value;
-          setForm({
-            ...form,
-            due_date: value ? value + ":00" : "",
-          });
-        }}
-      />
+      {/* PRIORITY */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-1">
+          Priority
+        </label>
+        <select
+          value={form.priority}
+          onChange={(e) =>
+            setForm({ ...form, priority: e.target.value })
+          }
+          className="w-full p-2 border rounded"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
 
-      <br /><br />
-
-      <select
-        value={form.priority}
-        onChange={(e) => setForm({ ...form, priority: e.target.value })}
-      >
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-
-      <br /><br />
-
+      {/* BUTTON */}
       <button
-        type="button"   // ✅ IMPORTANT
         onClick={handleSubmit}
-        style={{
-          padding: "8px 15px",
-          background: "blue",
-          color: "#fff",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
       >
         Create Task
       </button>
+
     </div>
-  );
+  </div>
+);
 }

@@ -77,12 +77,16 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: "20px", background: "#f5f6fa" }}>
-      <h1>🚀 Task Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 px-6 pb-6">
+
+      {/* <h1 className="text-3xl font-bold mb-6"> Dashboard</h1> */}
 
       {/* FILTERS */}
-      <div style={{ margin: "20px 0" }}>
-        <select onChange={(e) => setFilterStatus(e.target.value)}>
+      <div className="flex gap-4 mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <select
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="p-2 rounded border"
+        >
           <option value="">All Status</option>
           <option value="pending">Pending</option>
           <option value="in-progress">In Progress</option>
@@ -92,94 +96,190 @@ export default function Home() {
         <input
           placeholder="Filter by user"
           onChange={(e) => setFilterUser(e.target.value)}
-          style={{ marginLeft: "10px" }}
+          className="p-2 rounded border"
         />
       </div>
 
       {/* EDIT FORM */}
       {editingTask && (
-        <div
-          style={{
-            background: "#fff",
-            padding: "15px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h3>Edit Task</h3>
+        <div className="bg-white p-5 rounded-lg shadow mb-6">
+          <h3 className="text-xl font-semibold mb-4">Edit Task</h3>
 
+          {/* Title */}
+          <label className="block text-sm font-medium mb-1">Title</label>
           <input
-            value={editingTask.title}
+            value={editingTask?.title || ""}
             onChange={(e) =>
               setEditingTask({ ...editingTask, title: e.target.value })
             }
+            className="w-full mb-3 p-2 border rounded"
           />
 
+          {/* Description */}
+          <label className="block text-sm font-medium mb-1">Description</label>
           <input
-            value={editingTask.description}
+            value={editingTask?.description || ""}
             onChange={(e) =>
               setEditingTask({ ...editingTask, description: e.target.value })
             }
+            className="w-full mb-3 p-2 border rounded"
           />
 
-          <button onClick={handleUpdate}>Save</button>
-          <button onClick={() => setEditingTask(null)}>Cancel</button>
+          {/* Assigned */}
+          <label className="block text-sm font-medium mb-1">Assigned To</label>
+          <input
+            value={editingTask?.assigned_to || ""}
+            onChange={(e) =>
+              setEditingTask({ ...editingTask, assigned_to: e.target.value })
+            }
+            className="w-full mb-3 p-2 border rounded"
+          />
+
+          {/* Priority */}
+          <label className="block text-sm font-medium mb-1">Priority</label>
+          <select
+            value={editingTask?.priority || "medium"}
+            onChange={(e) =>
+              setEditingTask({ ...editingTask, priority: e.target.value })
+            }
+            className="w-full mb-3 p-2 border rounded"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+
+          {/* Status (with smart disable) */}
+          <label className="block text-sm font-medium mb-1">Status</label>
+          <select
+            value={editingTask?.status || "pending"}
+            onChange={(e) =>
+              setEditingTask({ ...editingTask, status: e.target.value })
+            }
+            className="w-full mb-4 p-2 border rounded"
+          >
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+
+            {/* 🚫 Prevent invalid reverse transition */}
+            <option
+              value="completed"
+              disabled={editingTask?.status === "pending"}
+            >
+              Completed
+            </option>
+          </select>
+
+          <div className="flex gap-3">
+            <button
+              onClick={handleUpdate}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+
+            <button
+              onClick={() => setEditingTask(null)}
+              className="bg-gray-400 text-white px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
-      {/* TASK LIST */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+      {/* TASK GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tasks.map((task) => (
           <div
             key={task.id}
-            style={{
-              width: "280px",
-              padding: "15px",
-              background: "#fff",
-              borderRadius: "10px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              border: isOverdue(task) ? "2px solid red" : "none",
-            }}
+            className={`bg-white p-5 rounded-xl shadow-md hover:shadow-lg transition ${
+              isOverdue(task) ? "border-2 border-red-500" : ""
+            }`}
           >
-            <h4>{task.title}</h4>
-            <p>{task.description}</p>
+            <h2 className="text-lg font-semibold mb-1">{task.title}</h2>
+            <p className="text-gray-600 text-sm mb-3">
+              {task.description}
+            </p>
 
-            <p>Status: {task.status}</p>
-            <p>Priority: {task.priority}</p>
-            <p>Assigned: {task.assigned_to}</p>
+            {/* STATUS BADGE */}
+            <span
+              className={`px-2 py-1 text-xs rounded font-medium ${
+                task.status === "completed"
+                  ? "bg-green-100 text-green-700"
+                  : task.status === "in-progress"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {task.status}
+            </span>
+
+            {/* PRIORITY */}
+            <p className="mt-2 text-sm">
+              <span className="font-medium">Priority:</span>{" "}
+              <span
+                className={
+                  task.priority === "high"
+                    ? "text-red-500"
+                    : task.priority === "medium"
+                    ? "text-yellow-500"
+                    : "text-green-500"
+                }
+              >
+                {task.priority}
+              </span>
+            </p>
+
+            <p className="text-sm mt-1">
+              Assigned: {task.assigned_to}
+            </p>
 
             {isOverdue(task) && (
-              <p style={{ color: "red" }}>⚠ Overdue</p>
+              <p className="text-red-500 text-sm mt-1">
+                ⚠ Overdue
+              </p>
             )}
 
             {/* ACTIONS */}
-            <div style={{ marginTop: "10px" }}>
-              <button
-                onClick={() =>
-                  handleStatusChange(task.id, "in-progress")
-                }
-              >
-                Start
-              </button>
+            <div className="flex flex-wrap gap-2 mt-4">
+
+              {task.status === "pending" && (
+                <button
+                  onClick={() =>
+                    handleStatusChange(task.id, "in-progress")
+                  }
+                  className="bg-yellow-500 text-white px-3 py-1 rounded text-sm"
+                >
+                  Start
+                </button>
+              )}
+
+              {task.status === "in-progress" && (
+                <button
+                  onClick={() =>
+                    handleStatusChange(task.id, "completed")
+                  }
+                  className="bg-green-600 text-white px-3 py-1 rounded text-sm"
+                >
+                  Complete
+                </button>
+              )}
 
               <button
-                onClick={() =>
-                  handleStatusChange(task.id, "completed")
-                }
+                onClick={() => handleEdit(task)}
+                className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
               >
-                Complete
-              </button>
-
-              <button onClick={() => handleEdit(task)}>
                 Edit
               </button>
 
               <button
                 onClick={() => handleDelete(task.id)}
-                style={{ color: "red" }}
+                className="bg-red-500 text-white px-3 py-1 rounded text-sm"
               >
                 Delete
               </button>
+
             </div>
           </div>
         ))}
