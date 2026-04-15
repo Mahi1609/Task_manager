@@ -29,7 +29,7 @@ export const updateStatus = async (id, status) => {
 
 
 export const deleteTask = async (id) => {
-  const res = await fetch(`http://127.0.0.1:8000/tasks/${id}`, {
+  const res = await fetch(`${BASE_URL}/tasks/${id}`, {
     method: "DELETE",
   });
 
@@ -38,7 +38,7 @@ export const deleteTask = async (id) => {
 
 
 export const updateTask = async (id, data) => {
-  const res = await fetch(`http://127.0.0.1:8000/tasks/${id}`, {
+  const res = await fetch(`${BASE_URL}/tasks/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
