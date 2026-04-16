@@ -24,3 +24,8 @@ app.include_router(task_routes.router)
 @app.get("/")
 def root():
     return {"message": "Task Manager API Running 🚀"}
+
+
+@app.head("/")
+def root_head():
+    return {}
