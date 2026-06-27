@@ -3,8 +3,18 @@ const BASE_URL = "/api";
 
 
 
-export const getTasks = async () => {
-  const res = await fetch(`${BASE_URL}/tasks`);
+export const getTasks = async (status = "", assignedTo = "") => {
+  let url = `${BASE_URL}/tasks?`;
+
+  if (status) url += `status=${status}&`;
+  if (assignedTo) url += `assigned_to=${assignedTo}`;
+
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error("Failed API response");
+  }
+
   return res.json();
 };
 

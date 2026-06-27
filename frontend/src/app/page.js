@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import {
   getTasks,
@@ -11,29 +12,12 @@ export default function Home() {
   const [tasks, setTasks] = useState([]);
   const [filterStatus, setFilterStatus] = useState("");
   const [filterUser, setFilterUser] = useState("");
-
   const [editingTask, setEditingTask] = useState(null);
 
   const fetchTasks = async () => {
     try {
-      const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-      let url = `${BASE_URL}/tasks?`;
-
-      console.log("BASE_URL:", BASE_URL);
-
-      if (filterStatus) url += `status=${filterStatus}&`;
-      if (filterUser) url += `assigned_to=${filterUser}`;
-
-      const res = await fetch(url);
-
-      if (!res.ok) {
-        throw new Error("Failed API response");
-      }
-
-      const data = await res.json();
+      const data = await getTasks(filterStatus, filterUser);
       setTasks(data);
-
     } catch (error) {
       console.error("Fetch error:", error);
       alert("Cannot connect to backend");
@@ -44,13 +28,13 @@ export default function Home() {
     fetchTasks();
   }, [filterStatus, filterUser]);
 
-  // ✅ STATUS UPDATE
+  // STATUS UPDATE
   const handleStatusChange = async (id, status) => {
     await updateStatus(id, status);
     fetchTasks();
   };
 
-  // ✅ DELETE
+  // DELETE
   const handleDelete = async (id) => {
     if (!confirm("Delete this task?")) return;
 
@@ -58,19 +42,19 @@ export default function Home() {
     fetchTasks();
   };
 
-  // ✅ EDIT START
+  // EDIT START
   const handleEdit = (task) => {
     setEditingTask(task);
   };
 
-  // ✅ EDIT SAVE
+  // EDIT SAVE
   const handleUpdate = async () => {
     await updateTask(editingTask.id, editingTask);
     setEditingTask(null);
     fetchTasks();
   };
 
-  // ✅ OVERDUE
+  // OVERDUE
   const isOverdue = (task) => {
     return (
       new Date(task.due_date) < new Date() &&
@@ -80,8 +64,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 px-6 pb-6">
-
-      {/* <h1 className="text-3xl font-bold mb-6"> Dashboard</h1> */}
 
       {/* FILTERS */}
       <div className="flex gap-4 mb-6 bg-white p-4 rounded-lg shadow-sm">
@@ -107,7 +89,6 @@ export default function Home() {
         <div className="bg-white p-5 rounded-lg shadow mb-6">
           <h3 className="text-xl font-semibold mb-4">Edit Task</h3>
 
-          {/* Title */}
           <label className="block text-sm font-medium mb-1">Title</label>
           <input
             value={editingTask?.title || ""}
@@ -117,7 +98,6 @@ export default function Home() {
             className="w-full mb-3 p-2 border rounded"
           />
 
-          {/* Description */}
           <label className="block text-sm font-medium mb-1">Description</label>
           <input
             value={editingTask?.description || ""}
@@ -127,7 +107,6 @@ export default function Home() {
             className="w-full mb-3 p-2 border rounded"
           />
 
-          {/* Assigned */}
           <label className="block text-sm font-medium mb-1">Assigned To</label>
           <input
             value={editingTask?.assigned_to || ""}
@@ -137,7 +116,6 @@ export default function Home() {
             className="w-full mb-3 p-2 border rounded"
           />
 
-          {/* Priority */}
           <label className="block text-sm font-medium mb-1">Priority</label>
           <select
             value={editingTask?.priority || "medium"}
@@ -151,7 +129,6 @@ export default function Home() {
             <option value="high">High</option>
           </select>
 
-          {/* Status (with smart disable) */}
           <label className="block text-sm font-medium mb-1">Status</label>
           <select
             value={editingTask?.status || "pending"}
@@ -162,8 +139,6 @@ export default function Home() {
           >
             <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
-
-            {/* 🚫 Prevent invalid reverse transition */}
             <option
               value="completed"
               disabled={editingTask?.status === "pending"}
@@ -200,11 +175,11 @@ export default function Home() {
             }`}
           >
             <h2 className="text-lg font-semibold mb-1">{task.title}</h2>
+
             <p className="text-gray-600 text-sm mb-3">
               {task.description}
             </p>
 
-            {/* STATUS BADGE */}
             <span
               className={`px-2 py-1 text-xs rounded font-medium ${
                 task.status === "completed"
@@ -217,7 +192,6 @@ export default function Home() {
               {task.status}
             </span>
 
-            {/* PRIORITY */}
             <p className="mt-2 text-sm">
               <span className="font-medium">Priority:</span>{" "}
               <span
@@ -243,7 +217,6 @@ export default function Home() {
               </p>
             )}
 
-            {/* ACTIONS */}
             <div className="flex flex-wrap gap-2 mt-4">
 
               {task.status === "pending" && (
